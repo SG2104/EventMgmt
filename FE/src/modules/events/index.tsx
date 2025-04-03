@@ -16,7 +16,7 @@ const EventComponent = () => {
 
   const { fetchData: getCategories, loading } = useGet<{
     data: { id: string; name: string }[];
-  }>("/events/categories");
+  }>("/api/events/categories");
 
   const getCategory = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,31 +42,41 @@ const EventComponent = () => {
   }, [event]);
 
   return (
-    <div className="flex  flex-col m-5 h-[calc(100dvh_-_150px)] overflow-auto ">
-      <div className="flex flex-col-reverse md:flex-row items-center gap-5 my-5">
-        <Select
-          isClearable
-          options={categories}
-          onChange={(selectedOption) => {
-            setFilterCategory(selectedOption.map((option) => option.value));
-          }}
-          placeholder="Filter by category"
-          isMulti
-          isLoading={loading}
-          value={categories?.filter((category) =>
-            filterCategory.includes(category.value)
-          )}
-          className="basic-multi-select flex-1 w-full md:w-32"
-          classNamePrefix="select "
-        />
+    <div className="flex flex-col h-[calc(100dvh-100px)] overflow-auto px-4 py-6 md:px-8">
+      {/* Header: Filter + Create Button */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+        {/* Category Filter */}
+        <div className="w-full md:w-2/3">
+          <Select
+            isClearable
+            isMulti
+            isLoading={loading}
+            options={categories}
+            onChange={(selectedOptions) =>
+              setFilterCategory(
+                selectedOptions ? selectedOptions.map((opt) => opt.value) : []
+              )
+            }
+            placeholder="Filter by category"
+            value={categories.filter((category) =>
+              filterCategory.includes(category.value)
+            )}
+            className="react-select-container"
+            classNamePrefix="select"
+          />
+        </div>
+  
+        {/* Create Event Button */}
         <Button
-          variant={"default"}
-          className="w-full md:w-32 text-neutral-800"
+          variant="default"
+          className="w-full md:w-auto min-w-[140px] bg-orange-500 text-white font-semibold hover:bg-orange-600 transition"
           onClick={() => setIsModalOpen((prev) => !prev)}
         >
           Create Event
         </Button>
       </div>
+  
+      {/* Event Cards */}
       <EventCards
         setEventToDelete={setEventToDelete}
         eventToDelete={eventToDelete}
@@ -74,6 +84,8 @@ const EventComponent = () => {
         setEvent={setEvent}
         isModalOpen={isModalOpen}
       />
+  
+      {/* Event Form Modal */}
       {isModalOpen && (
         <CreateEventForm
           isModalOpen={isModalOpen}
@@ -81,9 +93,10 @@ const EventComponent = () => {
           setEvent={setEvent}
           setIsModalOpen={setIsModalOpen}
         />
-      )}{" "}
+      )}
     </div>
   );
+  
 };
 
 export default EventComponent;

@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
-import { prismaClient } from "../../db";
+
 import generalResponse from "../../utlis/generalResponse";
+import { prisma } from '../../db';
+
 
 export const createEvent = async (req: Request, res: Response) => {
   try {
     const { name, description, startDateTime, endDateTime, categories } =
       req.body;
-    const event = await prismaClient?.event?.create({
+    const event = await prisma?.event?.create({
       data: {
         name,
         description,
@@ -53,7 +55,7 @@ export const createEvent = async (req: Request, res: Response) => {
 export const getAllEvents = async (req: Request, res: Response) => {
   try {
     const { limit, offset, categories } = req.body;
-    let whereClause: any = {}; // Initialize an empty where clause object
+    let whereClause: any = {};
 
     if (categories && categories.length > 0) {
       // Check if categories is defined and not empty
@@ -69,7 +71,7 @@ export const getAllEvents = async (req: Request, res: Response) => {
     }
     const skip = (offset - 1) * limit;
 
-    const events = await prismaClient.event.findMany({
+    const events = await prisma.event.findMany({
       where: {
         deletedAt: null,
         AND: categories.map((categoryId: string) => ({
@@ -93,7 +95,7 @@ export const getAllEvents = async (req: Request, res: Response) => {
       orderBy: { createdAt: "desc" },
     });
 
-    const totalEvents = await prismaClient.event.count({
+    const totalEvents = await prisma.event.count({
       where: {
         deletedAt: null,
         AND: categories.map((categoryId: string) => ({
@@ -142,7 +144,7 @@ export const updateEvents = async (req: Request, res: Response) => {
   if (!id) {
     return generalResponse(res, 400, {}, "Event id is required", true);
   }
-  const eventExist = await prismaClient.event.count({
+  const eventExist = await prisma.event.count({
     where: {
       id,
       deletedAt: null,
@@ -152,7 +154,7 @@ export const updateEvents = async (req: Request, res: Response) => {
   if (eventExist === 0) {
     return generalResponse(res, 400, {}, "Event does not exist", true);
   }
-  const event = await prismaClient?.event?.update({
+  const event = await prisma?.event?.update({
     where: { id },
     data: {
       name,
@@ -195,7 +197,7 @@ export const deleteEvents = async (req: Request, res: Response) => {
     if (!id) {
       return generalResponse(res, 400, {}, "Event id is required", true);
     }
-    const eventExist = await prismaClient.event.count({
+    const eventExist = await prisma.event.count({
       where: {
         id,
         deletedAt: null,
@@ -205,7 +207,7 @@ export const deleteEvents = async (req: Request, res: Response) => {
     if (eventExist === 0) {
       return generalResponse(res, 400, {}, "Event does not exist", true);
     }
-    const event = await prismaClient?.event?.update({
+    const event = await prisma?.event?.update({
       where: { id, deletedAt: null },
       data: {
         deletedAt: new Date(),
@@ -258,7 +260,7 @@ export const seedCategories = async (req: Request, res: Response) => {
       name: category,
     }));
 
-    const categories = await prismaClient?.category.createMany({
+    const categories = await prisma?.category.createMany({
       data: payload,
     });
 
@@ -290,7 +292,7 @@ export const seedCategories = async (req: Request, res: Response) => {
 };
 export const getCategories = async (req: Request, res: Response) => {
   try {
-    const categories = await prismaClient?.category.findMany({
+    const categories = await prisma?.category.findMany({
       select: { id: true, name: true },
     });
 
@@ -326,7 +328,7 @@ export const seedEvents = async (req: Request, res: Response) => {
         true
       );
     }
-    const categories = await prismaClient?.category.findMany({
+    const categories = await prisma?.category.findMany({
       select: { id: true },
     });
 
@@ -347,7 +349,7 @@ export const seedEvents = async (req: Request, res: Response) => {
       );
 
       eventPromise.push(
-        prismaClient.event.create({
+        prisma.event.create({
           data: {
             name: `Event ${i + 1} in ${randomCategoryLength} category`,
             description: `Event ${i + 1} in ${randomCategoryLength} category`,
@@ -369,11 +371,10 @@ export const seedEvents = async (req: Request, res: Response) => {
     const processInBatches = async (batchSize: number) => {
       for (let i = 0; i < eventPromise.length; i += batchSize) {
         const batch = eventPromise.slice(i, i + batchSize);
-        await Promise.all(batch); // Execute batch of promises concurrently
+        await Promise.all(batch);
       }
     };
 
-    // Call function with batch size of 15
     await processInBatches(15);
 
     return generalResponse(

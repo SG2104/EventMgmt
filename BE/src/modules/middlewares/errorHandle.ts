@@ -8,10 +8,10 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error(err.stack); // Log the error stack
+  console.error(err.stack);
   res.status(500).json({
     message: "An error occurred",
-    error: NODE_ENV === "development" ? err : {}, // Show error details only in development
+    error: NODE_ENV === "development" ? err : {},
   });
 };
 

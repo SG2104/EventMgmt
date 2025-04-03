@@ -5,8 +5,6 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Edit2, EyeIcon, Trash2 } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want. name, number, monthlySalary, perDaySalary, managerId
 export const getEventColumns = ({
   setEvent,
   setEventToView,
@@ -17,7 +15,7 @@ export const getEventColumns = ({
   setEventToDelete: Dispatch<SetStateAction<string | undefined>>;
 }): ColumnDef<Event>[] => [
   {
-    header: "Name",
+    header: () => <span className="font-bold text-sm md:text-base">Name</span>,
     accessorKey: "name",
     cell: ({ row }) => (
       <span
@@ -64,7 +62,7 @@ export const getEventColumns = ({
     cell: ({ row }) => {
       const rowData = row.getValue("categories") as [];
       return (
-        <span className="text-xs md:text-lg font-bold text-slate-700 capitalize">
+        <span className="text-xs md:text-base text-slate-900 capitalize">
           {rowData?.slice(0, 2)?.map(({ category }) => (
             <div> {(category as Category).name}</div>
           ))}

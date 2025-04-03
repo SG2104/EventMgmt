@@ -1,16 +1,17 @@
-import { PrismaClient } from "@prisma/client";
+// src/db/index.ts
+import { PrismaClient } from '@prisma/client';
 
-export const prismaClient = new PrismaClient({
-  log: ["query", "info", "warn", "error"],
+export const prisma = new PrismaClient({
+  log: ['query', 'info', 'warn', 'error'],
 });
 
 export async function checkDatabaseConnection() {
   try {
-    await prismaClient.$connect();
-    console.log("Database connected successfully!");
+    await prisma.$connect();
+    console.log('Database connected successfully!');
   } catch (error) {
-    console.error("Database connection failed:", error);
+    console.error('Database connection failed:', error);
   } finally {
-    await prismaClient.$disconnect();
+    await prisma.$disconnect();
   }
 }

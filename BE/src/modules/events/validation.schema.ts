@@ -22,7 +22,7 @@ export const createEventSchema = z
   })
   .refine((data) => new Date(data.startDateTime) < new Date(data.endDateTime), {
     message: "Start time must be earlier than end time.",
-    path: ["end"], // Point the error to the 'end' field
+    path: ["end"],
   });
 
 export const updateEventSchema = createEventSchema;

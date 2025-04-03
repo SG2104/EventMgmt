@@ -60,7 +60,7 @@ const CreateEventForm = ({
     fetchData: getCategories,
     loading: isCategoryLoading,
     data,
-  } = useGet<{ data: { id: string; name: string }[] }>("/events/categories");
+  } = useGet<{ data: { id: string; name: string }[] }>("/api/events/categories");
 
   const { addEventApi } = useAddEventPostApi();
   const { updateEventApi } = useUpdateEventApi(event?.id);

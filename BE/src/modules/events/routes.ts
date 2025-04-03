@@ -42,4 +42,5 @@ router.get(`${basePath}/categories`, getCategories);
 
 router.post(`${basePath}/seed-events`, seedEvents);
 
+
 export const eventRouter = router;

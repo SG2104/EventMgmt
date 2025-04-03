@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDelete, usePatch, usePost } from "@/hooks/useFetch";
 
-const basePath = "/events";
+const basePath = "/api/events";
 export const useGetProductPostApi = () => {
   const { loading, fetchData: post, error } = usePost(`${basePath}/get-all`);
 
