@@ -32,5 +32,12 @@ export const deleteEventSchema = z.object({
 });
 
 export const getEventsSchema = z.object({
-  id: z.number().nonnegative().int("Event ID must be a number"),
+  limit: z.number().min(1).max(50),
+  offset: z.number().min(1),
+  categories: z.array(z.string()).optional(),
+});
+
+
+export const seedEventSchema = z.object({
+  length: z.number().min(1).max(50),
 });

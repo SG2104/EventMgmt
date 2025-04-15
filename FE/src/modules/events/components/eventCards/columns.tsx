@@ -64,8 +64,11 @@ export const getEventColumns = ({
       return (
         <span className="text-xs md:text-base text-slate-900 capitalize">
           {rowData?.slice(0, 2)?.map(({ category }) => (
-            <div> {(category as Category).name}</div>
+            <div key={(category as Category).id}>
+              {(category as Category).name}
+            </div>
           ))}
+
           {rowData?.length > 2 && <span>+ {rowData?.length - 2}</span>}
         </span>
       );

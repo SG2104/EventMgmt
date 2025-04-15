@@ -57,12 +57,25 @@ const EventListing = ({
   const { deleteEventApi } = useDeleteEventAPi(eventToDelete);
 
   const handleFetchEvents = async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res: any = await getProductsApi(9, page, filterCategory);
-    if (res) {
-      setEvents(res?.data);
+    try {
+      const res: any = await getProductsApi(9, page, filterCategory);
+      if (res) {
+        setEvents(res?.data);
+      }
+    } catch (error: any) {
+      if (error?.message?.includes("429")) {
+        // Clear stale data
+        setEvents(undefined); // ✅ prevents stale render
+        alert("⛔ Too many requests! You are rate limited. Please wait.");
+        console.warn("🚨 DoS Attack Simulated — 429 Triggered");
+      } else {
+        alert("Something went wrong while fetching events.");
+      }
     }
   };
+  
+  
+  
   useEffect(() => {
     handleFetchEvents();
   }, [page, isModalOpen, eventToDelete]);
@@ -80,6 +93,7 @@ const EventListing = ({
 
   const handleDeleteEvent = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    //secure
     const res: any = await deleteEventApi();
     if (res?.data?.success) {
       setEventToDelete(undefined);

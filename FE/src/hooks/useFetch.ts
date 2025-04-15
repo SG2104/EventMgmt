@@ -30,6 +30,7 @@ function useFetch<T>(url: string, options: FetchOptions): UseFetchResult<T> {
             ...(options.headers || {}),
           },
           body: body ? JSON.stringify(body) : null,
+          credentials: "include",
         });
 
         if (!response.ok) {
@@ -38,10 +39,10 @@ function useFetch<T>(url: string, options: FetchOptions): UseFetchResult<T> {
 
         const responseData = (await response.json()) as T;
         setData(responseData);
-        return responseData; // Directly return fetched data
+        return responseData;
       } catch (err) {
         setError((err as Error).message);
-        throw err; // Propagate the error
+        throw err;
       } finally {
         setLoading(false);
       }

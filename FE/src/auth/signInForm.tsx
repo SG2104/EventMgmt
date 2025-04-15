@@ -28,6 +28,7 @@ export function SignInForm() {
     mode: "onChange",
   });
 
+  //secure (DoS Mitigation)
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     try {
       const res = await fetch("http://localhost:9000/api/v1/auth/login", {
@@ -49,6 +50,27 @@ export function SignInForm() {
     }
   };
 
+  //insecure (DoS Attack)
+  // const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+  //   // Vulnerable: Simulating DoS (comment this out after demo)
+  //   for (let i = 0; i < 50; i++) {
+  //     const res = await fetch("http://localhost:9000/api/v1/auth/login", {
+  //       method: "POST",
+  //       credentials: "include",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(values),
+  //     });
+  
+  //     const data = await res.json();
+  //     console.log(`Attempt ${i + 1}:`, data.message || data);
+  //     if (data?.message?.includes("Too many")) break;
+  //   }
+  
+  //   alert("Attack simulation done – check browser console");
+  // };
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <Form {...form}>

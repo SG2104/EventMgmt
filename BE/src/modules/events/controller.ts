@@ -53,6 +53,7 @@ export const createEvent = async (req: Request, res: Response) => {
 };
 
 export const getAllEvents = async (req: Request, res: Response) => {
+  console.log("🚨 get-all-events controller called");
   try {
     const { limit, offset, categories } = req.body;
     let whereClause: any = {};

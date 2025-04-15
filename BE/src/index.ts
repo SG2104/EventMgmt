@@ -13,6 +13,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
+    //insecure
+    // origin: true,
+
+    //secure (cors)
     origin: [FRONTEND_URL],
     credentials: true,
   })
