@@ -4,6 +4,8 @@ import MainLayout from "./components/common/mainLayout";
 import { SignInForm } from "./auth/signInForm";
 import PrivateRoute from "./auth/privateRoute";
 import PublicRoute from "./auth/publicRoute";
+import { Toaster } from "sonner";
+import { SignUpForm } from "./auth/signUpForm";
 
 const EventPage = lazy(() => import("./modules/events"));
 const NotFound = lazy(() => import("./components/common/notFound"));
@@ -11,6 +13,7 @@ const NotFound = lazy(() => import("./components/common/notFound"));
 const AppRoutes = () => {
   return (
     <Router>
+      <Toaster />
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           {/* Public Route */}
@@ -22,7 +25,14 @@ const AppRoutes = () => {
               </PublicRoute>
             }
           />
-
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <SignUpForm />
+              </PublicRoute>
+            }
+          />
           {/* Protected Route */}
           <Route
             path="/events"

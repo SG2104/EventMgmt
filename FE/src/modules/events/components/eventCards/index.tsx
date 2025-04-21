@@ -63,18 +63,10 @@ const EventListing = ({
         setEvents(res?.data);
       }
     } catch (error: any) {
-      if (error?.message?.includes("429")) {
-        // Clear stale data
-        setEvents(undefined); // ✅ prevents stale render
-        alert("⛔ Too many requests! You are rate limited. Please wait.");
-        console.warn("🚨 DoS Attack Simulated — 429 Triggered");
-      } else {
-        alert("Something went wrong while fetching events.");
-      }
+      alert("Something went wrong while fetching events.");
+      console.error(error);
     }
   };
-  
-  
   
   useEffect(() => {
     handleFetchEvents();

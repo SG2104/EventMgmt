@@ -24,8 +24,6 @@ export const login = async (req: Request, res: Response) => {
   console.log("🚀 Login controller hit");
   try {
     const { token, user } = await loginUser(req.body);
-    //insecure
-    // res.json ({ token, user });
 
     //secure (token is never exposed to JS)
     res.cookie("token", token, {
@@ -34,12 +32,18 @@ export const login = async (req: Request, res: Response) => {
       //insecure (csrf attack)
       // sameSite: "lax",
 
-      //secure 
+      //secure (csrf attack)
       sameSite: "strict",
 
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
+    //secure (XSS attack)
     return generalResponse(res, 200, user, "Login successful", true, true);
+
+    //insecure (XSS attack)
+    // return generalResponse(res, 200, { token, user }, "Login successful", true, true);
+
   } catch (err: any) {
     return generalResponse(res, 400, false, err.message);
   }
@@ -50,6 +54,7 @@ export const logout = (_req: Request, res: Response) => {
   return generalResponse(res, 200, true, "Logged out");
 };
 
+//secure (authentication bypass)
 export const getMe = async (req: Request, res: Response) => {
   try {
     const token = req.cookies.token;
@@ -71,3 +76,19 @@ export const getMe = async (req: Request, res: Response) => {
     return generalResponse(res, 401, false, err.message);
   }
 };
+
+
+//insecure (authentication bypass)
+// export const getMe = async (req: Request, res: Response) => {
+//   try {
+//     const user = {
+//       id: "attacker-id",
+//       email: "attacker@example.com",
+//       name: "Hacker",
+//     };
+
+//     return generalResponse(res, 200, user, "Authenticated (Insecure)", true, true);
+//   } catch (err: any) {
+//     return generalResponse(res, 401, false, err.message);
+//   }
+// };

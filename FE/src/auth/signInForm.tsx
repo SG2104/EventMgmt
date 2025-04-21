@@ -3,7 +3,6 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
 import { loginSchema } from "./loginSchema";
 
 import {
@@ -17,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 export function SignInForm() {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -28,7 +29,7 @@ export function SignInForm() {
     mode: "onChange",
   });
 
-  //secure (DoS Mitigation)
+  //secure (DoS Mitigation) - original
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     try {
       const res = await fetch("http://localhost:9000/api/v1/auth/login", {
@@ -39,38 +40,89 @@ export function SignInForm() {
         },
         body: JSON.stringify(values),
       });
-  
+
       const data = await res.json();
-  
+
       if (!res.ok) throw new Error(data.message || "Login failed");
-  
+
       window.location.href = "/events";
     } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message || "Something went wrong, Please try again");
     }
   };
 
-  //insecure (DoS Attack)
+  // //insecure (DoS Attack)
   // const onSubmit = async (values: z.infer<typeof loginSchema>) => {
   //   // Vulnerable: Simulating DoS (comment this out after demo)
-  //   for (let i = 0; i < 50; i++) {
+  //   let successCount = 0;
+
+  //   try {
+  //      for (let i = 0; i < 20; i++) {
+  //       const res = await fetch("http://localhost:9000/api/v1/auth/login", {
+  //         method: "POST",
+  //         credentials: "include",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(values),
+  //       });
+  //       const data = await res.json();
+  //       console.log(`Attempt ${i + 1}:`, data.message || data);
+  //       if (res.ok) {
+  //         successCount++;
+  //       }
+  //       if (data?.message?.includes("Too many")) {
+  //         toast.warn("Rate limit triggered.");
+  //         break;
+  //       }
+  //     }
+  //   }
+  //    catch (err) {
+  //         console.error("Attempt failed:", err);
+  //         toast.error("Network error during attack simulation.");
+  //       }
+  //   toast.info(`Attack simulation done. ${successCount} login(s) succeeded.`);
+  //   window.location.href = "/events";
+  // };
+
+  //insecure (XSS attack)
+  // const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+  //   console.log("onSubmit called", values);
+  //   try {
   //     const res = await fetch("http://localhost:9000/api/v1/auth/login", {
   //       method: "POST",
-  //       credentials: "include",
   //       headers: {
   //         "Content-Type": "application/json",
   //       },
+  //       credentials: "include",
   //       body: JSON.stringify(values),
   //     });
-  
+
   //     const data = await res.json();
-  //     console.log(`Attempt ${i + 1}:`, data.message || data);
-  //     if (data?.message?.includes("Too many")) break;
+
+  //     console.log("Returned data from backend", data);
+
+  //     if (!res.ok) {
+  //       toast.error(data.message || "Login failed");
+  //       return;
+  //     }
+  //     toast.success(data.message || "Login successful");
+
+  //     const token = data?.data?.token;
+  //     if (token) {
+  //       localStorage.setItem("token", token);
+  //     } else {
+  //       toast.error("No token received.");
+  //       return;
+  //     }
+
+  //     window.location.href = "/events";
+  //   } catch (err: any) {
+  //     console.error("Login request failed:", err);
+  //     toast.error(err?.message || "Something went wrong. Please try again.");
   //   }
-  
-  //   alert("Attack simulation done – check browser console");
   // };
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <Form {...form}>
@@ -122,6 +174,12 @@ export function SignInForm() {
                     Login
                   </Button>
                 </form>
+                <p className="text-sm text-center pt-4">
+                  Don&apos;t have an account?{" "}
+                  <Link to="/register" className="text-blue-600 hover:underline">
+                    Sign Up here
+                  </Link>
+                </p>
               </div>
             </CardContent>
           </Card>

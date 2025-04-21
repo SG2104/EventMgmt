@@ -6,6 +6,7 @@ import { prisma } from '../../db';
 
 export const createEvent = async (req: Request, res: Response) => {
   try {
+    console.log("🚀 Create controller hit");
     const { name, description, startDateTime, endDateTime, categories } =
       req.body;
     const event = await prisma?.event?.create({

@@ -17,7 +17,13 @@ import {
   updateEvents,
 } from "./controller";
 import { isAuthenticated } from "../middlewares/auth.middleware";
-import { categoryLimiter, createEventLimiter, deleteEventLimiter, getAllEventsLimiter, seedLimiter, updateEventLimiter } from "../middlewares/rate-limit.middleware";
+import {
+  createEventLimiter,
+  deleteEventLimiter,
+  getAllEventsLimiter,
+  seedLimiter,
+  updateEventLimiter,
+} from "../middlewares/rate-limit.middleware";
 
 const router = Router();
 const basePath = "/events";
@@ -53,8 +59,14 @@ router.delete(
 
 router.post(`${basePath}/seed-category`, seedLimiter, seedCategories);
 
-router.get(`${basePath}/categories`, categoryLimiter, getCategories);
+router.get(`${basePath}/categories`, getCategories);
 
-router.post(`${basePath}/seed-events`, isAuthenticated, seedLimiter, validationMiddleware(seedEventSchema), seedEvents);
+router.post(
+  `${basePath}/seed-events`,
+  isAuthenticated,
+  seedLimiter,
+  validationMiddleware(seedEventSchema),
+  seedEvents
+);
 
 export const eventRouter = router;

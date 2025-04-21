@@ -42,6 +42,7 @@ import { useGet } from "@/hooks/useFetch";
 import { EventCategoryType } from "../../types";
 import { useAddEventPostApi, useUpdateEventApi } from "../../hooks/useEvent";
 import Select from "react-select";
+import { toast } from "sonner";
 
 interface CreateEventFormProps {
   event: EventCategoryType | null;
@@ -141,32 +142,35 @@ const CreateEventForm = ({
       }
     } else {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      //secure 
-      // const res: any = await addEventApi(createEventPayload);
-      // if (res?.data?.success) {
-      //   setIsModalOpen(false);
-      // }
 
-      //insecure 
-      for (let i = 0; i < 15; i++) {
-        try {
-          const res: any = await addEventApi(createEventPayload);
-          console.log(`✅ Created Event [${i + 1}]`, res?.data);
-      
-          if (res?.data?.success && i === 0) {
-            // Only close modal on first success to preserve simulation
-            setIsModalOpen(false);
-          }
-        } catch (error: any) {
-          if (error?.message?.includes("429")) {
-            alert("⛔ Rate limit hit! Too many event creation attempts.");
-            console.warn("🚨 DoS Attack on /api/events — 429 Triggered after multiple POSTs");
-            break;
-          } else {
-            console.warn(`❌ Failed at request #${i + 1}`, error.message);
-          }
-        }
+      //DoS attack : createEvent (/api/events)
+      // original (if attack needs to be showed manually)
+      const res: any = await addEventApi(createEventPayload);
+      if (res?.data?.success) {
+        setIsModalOpen(false);
       }
+
+      //DoS attack : createEvent (/api/events)
+      //insecure (attack needs to be showed by running the for loop)
+      // for (let i = 0; i < 15; i++) {
+      //   try {
+      //     const res: any = await addEventApi(createEventPayload);
+      //     console.log(`✅ Created Event [${i + 1}]`, res?.data);
+      
+      //     if (res?.data?.success && i === 0) {
+      //       // Only close modal on first success to preserve simulation
+      //       setIsModalOpen(false);
+      //     }
+      //   } catch (error: any) {
+      //     if (error?.message?.includes("429")) {
+      //       toast.error("⛔ Rate limit hit! Too many event creation attempts.");
+      //       console.warn("🚨 DoS Attack on /api/events — 429 Triggered after multiple POSTs");
+      //       break;
+      //     } else {
+      //       console.warn(`❌ Failed at request #${i + 1}`, error.message);
+      //     }
+      //   }
+      // }
       
     }
   };

@@ -1,18 +1,28 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const MainLayout = () => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:9000/api/v1/auth/logout", {
+      const res = await fetch("http://localhost:9000/api/v1/auth/logout", {
         method: "POST",
         credentials: "include",
       });
+
+      if (!res.ok) {
+        const data = await res.json();
+        toast.error(data.message || "Logout failed ❌");
+        return;
+      }
+
+      toast.success("Logged out successfully 👋");
       navigate("/");
     } catch (error) {
       console.error("Logout failed", error);
+      toast.error("Something went wrong during logout.");
     }
   };
 

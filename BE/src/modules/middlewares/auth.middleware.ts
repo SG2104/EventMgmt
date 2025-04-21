@@ -4,7 +4,11 @@ import jwt from "jsonwebtoken";
 import { prisma } from "../../db";
 
 export const isAuthenticated = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+ //secure (XSS attack)
   const token = req.cookies?.token;
+
+  //insecure (XSS attack)
+  // const token = req.cookies?.token || req.headers.authorization?.split(" ")[1];
 
   if (!token) {
     res.status(401).json({
@@ -15,7 +19,6 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
   }
 
   try {
-    // secure (/auth/me)
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
 
     const user = await prisma.user.findUnique({

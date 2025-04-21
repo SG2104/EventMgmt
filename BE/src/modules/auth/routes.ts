@@ -8,7 +8,12 @@ import { isAuthenticated } from '../middlewares/auth.middleware';
 const router = Router();
 
 router.post('/register', validationMiddleware(registerSchema), registerLimiter, register);
-router.post('/login', validationMiddleware(loginSchema),login);
+
+//secure (DoS Mitigation)
+router.post('/login', validationMiddleware(loginSchema), loginLimiter, login);
+
+//insecure (DoS attack)
+// router.post('/login', validationMiddleware(loginSchema), login);
 
 //secure (prevents CSRF attack)
 router.post('/logout', isAuthenticated, logout);

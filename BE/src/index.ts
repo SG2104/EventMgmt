@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import morgan from "morgan";
+// import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import errorHandler from "./modules/middlewares/errorHandle";
 import { FRONTEND_URL, PORT } from "./config";
@@ -18,10 +18,11 @@ app.use(
 
     //secure (cors)
     origin: [FRONTEND_URL],
+
     credentials: true,
   })
 );
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 
 registerModules(app);
 
