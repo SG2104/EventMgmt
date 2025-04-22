@@ -16,10 +16,10 @@ router.post('/login', validationMiddleware(loginSchema), loginLimiter, login);
 // router.post('/login', validationMiddleware(loginSchema), login);
 
 //secure (prevents CSRF attack)
-router.post('/logout', isAuthenticated, logout);
+// router.post('/logout', isAuthenticated, logout);
 
 //insecure (for testing purposes): csrf attack
-// router.post('/logout', logout);
+router.post('/logout', logout);
 
 router.get('/me', getMe);
 

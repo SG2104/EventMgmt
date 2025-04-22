@@ -146,31 +146,31 @@ const CreateEventForm = ({
       //DoS attack : createEvent (/api/events)
       // original (if attack needs to be showed manually)
       const res: any = await addEventApi(createEventPayload);
-      if (res?.data?.success) {
-        setIsModalOpen(false);
-      }
+      // if (res?.data?.success) {
+      //   setIsModalOpen(false);
+      // }
 
       //DoS attack : createEvent (/api/events)
       //insecure (attack needs to be showed by running the for loop)
-      // for (let i = 0; i < 15; i++) {
-      //   try {
-      //     const res: any = await addEventApi(createEventPayload);
-      //     console.log(`✅ Created Event [${i + 1}]`, res?.data);
+      for (let i = 0; i < 15; i++) {
+        try {
+          const res: any = await addEventApi(createEventPayload);
+          console.log(`✅ Created Event [${i + 1}]`, res?.data);
       
-      //     if (res?.data?.success && i === 0) {
-      //       // Only close modal on first success to preserve simulation
-      //       setIsModalOpen(false);
-      //     }
-      //   } catch (error: any) {
-      //     if (error?.message?.includes("429")) {
-      //       toast.error("⛔ Rate limit hit! Too many event creation attempts.");
-      //       console.warn("🚨 DoS Attack on /api/events — 429 Triggered after multiple POSTs");
-      //       break;
-      //     } else {
-      //       console.warn(`❌ Failed at request #${i + 1}`, error.message);
-      //     }
-      //   }
-      // }
+          if (res?.data?.success && i === 0) {
+            // Only close modal on first success to preserve simulation
+            setIsModalOpen(false);
+          }
+        } catch (error: any) {
+          if (error?.message?.includes("429")) {
+            toast.error("⛔ Rate limit hit! Too many event creation attempts.");
+            console.warn("🚨 DoS Attack on /api/events — 429 Triggered after multiple POSTs");
+            break;
+          } else {
+            console.warn(`❌ Failed at request #${i + 1}`, error.message);
+          }
+        }
+      }
       
     }
   };

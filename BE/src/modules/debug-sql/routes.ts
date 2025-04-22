@@ -8,14 +8,14 @@ router.get("/sql-demo", async (req, res) => {
 
   try {
     //insecure
-    // const result = await prisma.$queryRawUnsafe(
-    //   `SELECT * FROM "User" WHERE email = '${email}'`
-    // );
+    const result = await prisma.$queryRawUnsafe(
+      `SELECT * FROM "User" WHERE email = '${email}'`
+    );
 
     //secure
-    const result = await prisma.$queryRaw`
-      SELECT * FROM "User" WHERE email = ${email}
-  `;
+  //   const result = await prisma.$queryRaw`
+  //     SELECT * FROM "User" WHERE email = ${email}
+  // `;
 
     res.json({
       success: true,

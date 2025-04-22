@@ -30,7 +30,7 @@ const basePath = "/events";
 router.post(
   `${basePath}`,
   isAuthenticated,
-  createEventLimiter,
+  // createEventLimiter,
   validationMiddleware(createEventSchema, "body"),
   createEvent
 );
